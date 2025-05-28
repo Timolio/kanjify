@@ -1,0 +1,38 @@
+{
+    "name": "kanjify",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "dev": "tsx src/index.ts",
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "test": "vitest run"
+    },
+    "files": [
+        "dist"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Timolio/kanjify"
+    },
+    "keywords": [
+        "kanji",
+        "japanese",
+        "number",
+        "typescript",
+        "converter"
+    ],
+    "author": "Timolio",
+    "license": "MIT",
+    "type": "module",
+    "devDependencies": {
+        "tsx": "^4.19.4",
+        "typescript": "^5.8.3",
+        "vitest": "^3.1.4"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

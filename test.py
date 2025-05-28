@@ -1,0 +1,1 @@
+from kanjize import kanji2number, number2kanji
