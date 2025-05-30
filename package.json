@@ -1,7 +1,7 @@
 {
     "name": "kanjify",
     "version": "0.1.0",
-    "description": "Japanese kanji numerals converter",
+    "description": "Convert between bigints, numbers and Japanese kanji numerals",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
