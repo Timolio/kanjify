@@ -1,4 +1,4 @@
-import { KANJI_TO_VALUE, ZERO_CHARS } from './constants';
+import { KANJI_TO_VALUE, MULTICHAR_UNIT_CHARS, ZERO_CHARS } from './constants';
 import { KanjiToNumberOptions } from './types';
 
 export function kanjiToNumber(
@@ -9,10 +9,6 @@ export function kanjiToNumber(
 
     if (!kanji || kanji.length === 0) {
         throw new Error('Input string cannot be empty');
-    }
-
-    if (ZERO_CHARS.has(kanji)) {
-        return 0n;
     }
 
     const result = _kanjiToNumber(kanji);
@@ -32,19 +28,38 @@ export function kanjiToNumber(
 }
 
 function _kanjiToNumber(kanji: string): bigint {
+    if (ZERO_CHARS.has(kanji)) {
+        return 0n;
+    }
+
     let result = 0n;
     let groupValue = 0n;
     let lastBigUnitValue: bigint | null = null;
     let lastDigit: bigint | null = null;
     let lastSmallUnitValue: bigint | null = null;
+    let infoChars = '';
 
-    for (let i = 0; i < kanji.length; i++) {
-        const char = kanji[i];
-        const info = KANJI_TO_VALUE.get(char);
+    const chars = [...kanji];
+    const charsLen = chars.length;
+
+    for (let i = 0; i < charsLen; i++) {
+        const char = chars[i];
+        infoChars += char;
+        const info = KANJI_TO_VALUE.get(infoChars);
 
         if (!info) {
-            throw new Error(`Unknown kanji: ${char}`);
+            if (!MULTICHAR_UNIT_CHARS.has(char)) {
+                throw new Error(`Unknown kanji at index ${i}`);
+            }
+            if (i === charsLen - 1) {
+                throw new Error(
+                    'Invalid kanji number: incomplete multicharacter big unit'
+                );
+            }
+            continue;
         }
+
+        infoChars = '';
 
         switch (info.type) {
             case 'digit':

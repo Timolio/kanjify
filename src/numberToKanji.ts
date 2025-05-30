@@ -1,17 +1,18 @@
 import { BIG_UNIT_TABLE, DIGIT_TABLES, SMALL_UNIT_TABLES } from './constants';
-import { NumberToKanjiOptions } from './types';
+import { Form, NumberToKanjiOptions } from './types';
 
 export function numberToKanji(
     number: number | bigint,
     options: NumberToKanjiOptions = {}
 ): string {
-    const register = options.register ?? 'standard';
-    const style = options.style ?? 'traditional';
-    const zeroStyle = options.zero_style ?? 'circle';
-    const ignoreUnsafeNumber = options.ignoreUnsafeNumber ?? false;
+    const {
+        form = 'common',
+        zeroStyle = 'kanji',
+        ignoreUnsafeNumber = false,
+    } = options;
 
-    const digitTable = DIGIT_TABLES[register];
-    const smallUnitTable = SMALL_UNIT_TABLES[register];
+    const digitTable = DIGIT_TABLES[form];
+    const smallUnitTable = SMALL_UNIT_TABLES[form];
     const zeroChar = zeroStyle === 'kanji' ? '零' : '〇';
 
     if (number === 0 || number === 0n) {
@@ -20,69 +21,92 @@ export function numberToKanji(
 
     let str: string;
     if (typeof number === 'bigint') {
-        str = number.toString();
+        const absBigInt = number < 0n ? -number : number;
+        str = absBigInt.toString();
     } else if (typeof number === 'number') {
-        if (!Number.isSafeInteger(number)) {
+        let int = Math.trunc(Math.abs(number));
+
+        if (!Number.isSafeInteger(int)) {
             if (ignoreUnsafeNumber) {
-                str = number.toLocaleString('fullwide', { useGrouping: false });
-                console.log(str);
+                str = int.toLocaleString('fullwide', { useGrouping: false });
             } else {
-                throw new TypeError(
+                throw new Error(
                     'The number is not a safe integer. Use bigint instead. ' +
                         `Max safe integer is ${Number.MAX_SAFE_INTEGER}`
                 );
             }
         } else {
-            str = number.toString();
+            str = int.toString();
         }
     } else {
         throw new TypeError('Input must be a number or bigint');
     }
 
-    if (style === 'plain') {
-        let result = '';
-        for (let i = 0; i < str.length; i++) {
-            const ch = str[i];
-            result += ch === '0' ? zeroChar : digitTable[+ch];
-        }
-        return result;
-    }
+    return _numberToKanji(str, form, digitTable, smallUnitTable);
+}
 
-    let result = '';
+function _numberToKanji(
+    str: string,
+    form: Form,
+    digitTable: readonly string[],
+    smallUnitTable: readonly string[]
+): string {
+    const len = str.length;
+    const parts: string[] = [];
+
     let groupIndex = 0;
 
-    for (let i = str.length; i > 0; i -= 4) {
-        const group = str.slice(Math.max(0, i - 4), i);
-        const groupKanji = _processGroup(group, digitTable, smallUnitTable);
+    for (let i = len; i > 0; i -= 4) {
+        const groupStart = Math.max(0, i - 4);
+        const groupKanji = _processGroup(
+            str,
+            groupStart,
+            i,
+            digitTable,
+            smallUnitTable
+        );
 
-        if (groupKanji !== '') {
-            result = groupKanji + BIG_UNIT_TABLE[groupIndex] + result;
+        if (groupKanji) {
+            if (groupIndex > 0) {
+                const unit =
+                    form === 'daiji' && groupIndex === 1
+                        ? '萬'
+                        : BIG_UNIT_TABLE[groupIndex];
+                parts.push(unit);
+            }
+            parts.push(groupKanji);
         }
         groupIndex++;
     }
 
-    return result;
+    return parts.reverse().join('');
 }
 
 function _processGroup(
-    group: string,
+    str: string,
+    start: number,
+    end: number,
     digitTable: readonly string[],
     smallUnitTable: readonly string[]
 ): string {
-    let result = '';
-    const len = group.length;
+    const groupLen = end - start;
+    const result: string[] = [];
 
-    for (let i = 0; i < len; i++) {
-        const digit = +group[i];
+    for (let i = start; i < end; i++) {
+        const digit = +str[i];
         if (digit === 0) continue;
 
-        const pos = len - i - 1;
+        const pos = groupLen - (i - start) - 1;
+
         if (digit === 1 && pos > 0) {
-            result += smallUnitTable[pos];
+            result.push(smallUnitTable[pos]);
         } else {
-            result += digitTable[digit] + smallUnitTable[pos];
+            result.push(digitTable[digit]);
+            if (pos > 0) {
+                result.push(smallUnitTable[pos]);
+            }
         }
     }
 
-    return result;
+    return result.join('');
 }

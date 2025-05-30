@@ -1,12 +1,10 @@
-export type NumeralForm = 'standard' | 'financial';
-export type RenderStyle = 'traditional' | 'plain';
-export type ZeroStyle = 'kanji' | 'circle';
+export type Form = 'common' | 'common-daiji' | 'daiji';
+export type ZeroStyle = 'kanji' | 'sign';
 export type ReturnType = 'number' | 'bigint' | 'mixed';
 
 export interface NumberToKanjiOptions {
-    register?: NumeralForm;
-    style?: RenderStyle;
-    zero_style?: ZeroStyle;
+    form?: Form;
+    zeroStyle?: ZeroStyle;
     ignoreUnsafeNumber?: boolean;
 }
 
