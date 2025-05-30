@@ -1,5 +1,9 @@
-import { BIG_UNIT_TABLE, DIGIT_TABLES, SMALL_UNIT_TABLES } from './constants';
-import { Form, NumberToKanjiOptions } from './types';
+import {
+    BIG_UNIT_TABLE,
+    DIGIT_TABLES,
+    SMALL_UNIT_TABLES,
+} from './constants.js';
+import { Form, NumberToKanjiOptions } from './types.js';
 
 export function numberToKanji(
     number: number | bigint,

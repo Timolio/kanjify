@@ -1,5 +1,9 @@
-import { KANJI_TO_VALUE, MULTICHAR_UNIT_CHARS, ZERO_CHARS } from './constants';
-import { KanjiToNumberOptions } from './types';
+import {
+    KANJI_TO_VALUE,
+    MULTICHAR_UNIT_CHARS,
+    ZERO_CHARS,
+} from './constants.js';
+import { KanjiToNumberOptions } from './types.js';
 
 export function kanjiToNumber(
     kanji: string,
