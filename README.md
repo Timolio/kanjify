@@ -35,7 +35,7 @@ numberToKanji(0); // 零
 numberToKanji(0, { zeroStyle: 'sign' }); // 〇
 
 numberToKanji(Number.MAX_SAFE_INTEGER + 1);
-// Error: The number is not a safe integer. Use bigint instead. Max safe integer is 9007199254740991
+// Error: The number is not a safe integer. Use bigint instead...
 
 numberToKanji(Number.MAX_SAFE_INTEGER + 1, { ignoreUnsafeNumber: true });
 // 九千七兆千九百九十二億五千四百七十四万九百九十二
@@ -48,8 +48,8 @@ kanjiToNumber('壱佰弐拾参'); // 123
 kanjiToNumber('壱萬弐仟参佰肆拾伍'); // 12345
 kanjiToNumber('壱億弐仟参佰肆拾伍萬陸仟漆佰捌拾玖'); // 123456789
 
-kanjiToNumber('壱萬弐千参百四拾五'); // 12345
-kanjiToNumber('壱億弐千参百四拾五萬六千七百八拾九'); // 123456789
+kanjiToNumber('壱万弐千参百四拾五'); // 12345
+kanjiToNumber('壱億弐千参百四拾五万六千七百八拾九'); // 123456789
 
 // Returns `number` by default
 kanjiToNumber('九百二十二那由他'); // 9.22e+62
