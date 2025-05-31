@@ -21,7 +21,7 @@
         "kanji",
         "japanese",
         "number",
-        "daiji",
+        "bigint",
         "typescript",
         "converter"
     ],

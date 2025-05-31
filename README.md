@@ -1,5 +1,8 @@
 ### Kanjify
 
+[![NPM Version](https://img.shields.io/npm/v/kanjify)](https://www.npmjs.com/package/kanjify)
+[![NPM Downloads](https://img.shields.io/npm/dm/kanjify)](https://www.npmjs.com/package/kanjify)
+
 JS/TS utility to convert between number/bigint and Japanese kanji numerals.
 
 _⚠️ Note: Negative and non-integer numbers are not supported at the moment — they are converted to their absolute integer part._
